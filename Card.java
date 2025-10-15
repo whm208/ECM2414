@@ -1,22 +1,16 @@
-public final class Card {
-    private final String suit;
-    private final String rank;
+public class Card {
+    private int value;
 
-    public Card(String suit, String rank) {
-        this.suit = suit;
-        this.rank = rank;
+    public Card(int value) {
+        this.value = value;
     }
 
-    public String getSuit() {
-        return suit;
-    }
-
-    public String getRank() {
-        return rank;
+    public int getValue() {
+        return value;
     }
 
     @Override
     public String toString() {
-        return rank + " of " + suit;
+        return String.valueOf(value);
     }
 }

@@ -1,50 +1,65 @@
 import java.util.*;
 import java.util.concurrent.*;
+import java.io.*;
 
 public class CardGame {
-    private static final String[] SUITS = {"Hearts", "Diamonds", "Clubs", "Spades"};
-    private static final String[] RANKS = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
-    private static final List<Card> deck = new CopyOnWriteArrayList<>();
-    private static final ExecutorService executor = Executors.newFixedThreadPool(2);
-
     public static void main(String[] args) {
-        buildDeck();
-        Collections.shuffle(deck);
-        Player alice = new Player("Alice");
-        Player bob = new Player("Bob");
-        executor.execute(() -> dealCards(alice));
-        executor.execute(() -> dealCards(bob));
-        executor.shutdown();
-        try {
-            executor.awaitTermination(1, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println(alice);
-        System.out.println(bob);
-    }
-
-    private static void buildDeck() {
-        for (String suit : SUITS) {
-            for (String rank : RANKS) {
-                deck.add(new Card(suit, rank));
+        Scanner scanner = new Scanner(System.in);
+        int playerCount;
+        // Ask the user to input the number of players until a valid integer has been inputted
+        do {
+            System.out.println("Please enter the number of players:");
+            playerCount = scanner.nextInt();
+            scanner.nextLine();
+            if (playerCount < 1) { 
+                System.out.println("There must be at least 1 player.");
             }
+        } while (playerCount < 1);
+        // Ask the user to input a file until a valid .txt file has been inputted
+        System.out.println("Please enter location of pack to load:");
+        String packLocation = scanner.nextLine();
+        cardPack = loadPack(packLocation);
+        int requiredCards = playerCount * 8;
+        if (cardPack == null || cardPack.size() != requiredCards) {
+            System.out.println("Error: Pack must contain exactly " + requiredCards + " cards.");
+            scanner.close();
+            return;
         }
     }
-
-    private static void dealCards(Player player) {
-        while (true) {
-            Card card;
-            synchronized (deck) {
-                if (deck.isEmpty()) break;
-                card = deck.remove(0);
+    private List<Integer> loadPack(String filePath) {
+    File packFile = new File(filePath);
+    if (!packFile.exists()) {
+        System.out.println("Pack file not found.");
+        return null;
+    }
+    List<Integer> pack = new ArrayList<>();
+    try (BufferedReader br = new BufferedReader(new FileReader(packFile))) {
+        String line;
+        int lineNumber = 1;
+        while ((line = br.readLine()) != null) {
+            line = line.trim();
+            // Check for empty lines
+            if (line.isEmpty()) {
+                System.out.println("Error: Empty line at line " + lineNumber);
+                return null;
             }
-            player.receiveCard(card);
             try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                int cardValue = Integer.parseInt(line);
+                if (cardValue < 0) {
+                    System.out.println("Error: Negative card value at line " + lineNumber + ": " + cardValue);
+                    return null;
+                }
+                pack.add(cardValue);
+            } catch (NumberFormatException e) {
+                System.out.println("Error: Invalid integer at line " + lineNumber + ": " + line);
+                return null;
             }
+            lineNumber++;
         }
+    } catch (IOException e) {
+        System.out.println("Error reading pack file: " + e.getMessage());
+        return null;
+    }
+    return pack;
     }
 }
