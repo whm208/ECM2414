@@ -60,6 +60,8 @@ public class CardGame {
         System.out.println("Error reading pack file: " + e.getMessage());
         return null;
     }
+    Collections.shuffle(pack);
+    System.out.println("Pack loaded and shuffled successfully!");
     return pack;
     }
 }
