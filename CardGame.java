@@ -76,7 +76,15 @@ public class CardGame {
     } catch (IOException e) {
         System.out.println("Error reading pack file: " + e.getMessage());
         return null;
-    }
+        }
     return pack;
+    for (int each_player_card = 0; each_player_card < playerCount*4; each_player++) {
+        //First half of pack: distribute 1 card to each player until each player has 4 cards
+        player(each_player_card%playerCount) = pack(each_player_card)
+        }
+    for (int each_deck_card = playerCount*4; each_deck_card < playerCount*8; each_deck++) {
+        //Second half of pack: distribute 1 card to each deck until each deck has 4 cards
+        deck(each_deck_card%playerCount) = pack(each_deck_card)
+        }
     }
 }
