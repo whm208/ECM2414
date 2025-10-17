@@ -42,6 +42,26 @@ public class CardGame {
         }
         Collections.shuffle(cardPack);
         System.out.println("Pack loaded and shuffled successfully!");
+        List<Player> players = new ArrayList<>();
+        List<Deck> decks = new ArrayList<>();
+        for (int each_object = 0; each_object < playerCount; each_object++) {
+            players.add(new Player(each_object + 1));
+            decks.add(new Deck(each_object + 1));
+        }
+        for (int each_player_card = 0; each_player_card < playerCount * 4; each_player_card++) {
+            Player player = players.get(each_player_card % playerCount);
+            player.addCard(cardPack.get(each_player_card));
+        }
+        for (int each_deck_card = playerCount * 4; each_deck_card < playerCount * 8; each_deck_card++) {
+            Deck deck = decks.get(each_deck_card % playerCount);
+            deck.addCard(cardPack.get(each_deck_card));
+        }
+        for (Player player : players) {
+            System.out.println(player);
+        }
+        for (Deck deck : decks) {
+            System.out.println(deck);
+        }
         scanner.close();
     }
     private static List<Integer> loadPack(String filePath) {
@@ -78,13 +98,5 @@ public class CardGame {
         return null;
         }
     return pack;
-    for (int each_player_card = 0; each_player_card < playerCount*4; each_player++) {
-        //First half of pack: distribute 1 card to each player until each player has 4 cards
-        player(each_player_card%playerCount) = pack(each_player_card)
-        }
-    for (int each_deck_card = playerCount*4; each_deck_card < playerCount*8; each_deck++) {
-        //Second half of pack: distribute 1 card to each deck until each deck has 4 cards
-        deck(each_deck_card%playerCount) = pack(each_deck_card)
-        }
     }
 }
