@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -44,6 +47,13 @@ public class Player {
             Card drawnCard = drawDeck.drawCard();
             if (drawnCard != null) {
                 hand.add(drawnCard);
+                String filename = "player" + id + "_output.txt";
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+                    writer.write("player " + id + " draws a " + drawnCard.getValue() + " from deck " + drawDeck.getId());
+                    writer.newLine();
+                } catch (IOException e) {
+                    System.out.println("Error writing to file " + filename + ": " + e.getMessage());
+                }
                 System.out.println("Player " + id + " drew a " + drawnCard.getValue() + " from deck " + drawDeck.getId());
             } else {
                 return;
@@ -51,6 +61,13 @@ public class Player {
             if (!hand.isEmpty()) {
                 Card discardedCard = hand.remove(0); // doesnt have "strategy" yet
                 discardDeck.addCard(discardedCard);
+                String filename = "player" + id + "_output.txt";
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+                    writer.write("player " + id + " discards a " + discardedCard.getValue() + " to deck " + discardDeck.getId());
+                    writer.newLine();
+                } catch (IOException e) {
+                    System.out.println("Error writing to file " + filename + ": " + e.getMessage());
+                }
                 System.out.println("Player " + id + " discarded a " + discardedCard.getValue() + " to deck " + discardDeck.getId());
             }
         }
