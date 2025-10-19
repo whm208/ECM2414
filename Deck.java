@@ -1,21 +1,23 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Deck {
     private int id;
-    private List<Integer> cards;
+    private BlockingQueue<Integer> cards;
 
     public Deck(int id) {
         this.id = id;
-        this.cards = new ArrayList<>();
+        this.cards = new LinkedBlockingQueue<>();
     }
 
-    public void addCard(int card) {
-        cards.add(card);
+    public void addCard(int card) throws InterruptedException {
+        cards.put(card);
     }
 
     public List<Integer> getCards() {
-        return cards;
+        return new ArrayList<>(cards);
     }
 
     public int getId() {

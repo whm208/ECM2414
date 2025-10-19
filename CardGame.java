@@ -54,7 +54,11 @@ public class CardGame {
         }
         for (int each_deck_card = playerCount * 4; each_deck_card < playerCount * 8; each_deck_card++) {
             Deck deck = decks.get(each_deck_card % playerCount);
-            deck.addCard(cardPack.get(each_deck_card));
+            try {
+                deck.addCard(cardPack.get(each_deck_card));
+            } catch (InterruptedException e) {
+                System.out.println("Error adding card to deck: " + e.getMessage());
+            }
         }
         for (Player player : players) {
             System.out.println(player);
