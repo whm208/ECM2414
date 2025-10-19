@@ -60,10 +60,10 @@ public class CardGame {
             String filename = "player" + player.getId() + "_output.txt";
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
                 writer.write("player " + player.getId() + " initial hand:");
-                System.out.print("player " + player.getId() + " initial hand:");
+                System.out.print("player " + player.getId() + " initial hand: ");
                 for (Card card : player.getHand()) {
-                    writer.write(" " + card.getValue());
-                    System.out.print(" " + card.getValue());
+                    writer.write(card.getValue());
+                    System.out.print(card.getValue());
                 }
             writer.newLine();
             }
@@ -73,7 +73,11 @@ public class CardGame {
             System.out.println();
         }
         for (Deck deck : decks) {
-            System.out.println(deck);
+            System.out.print("deck" + deck.getId() + " initial cards: ");
+            for (Card card : deck.getCards()) {
+                    System.out.print(card.getValue());
+                }
+            System.out.println();
         }
         scanner.close();
     }
