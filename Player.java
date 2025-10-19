@@ -36,22 +36,26 @@ public class Player {
 
 
     
-        public void playTurn(ArrayList<Deck> decks, int playerCount) throws InterruptedException {
-            Deck drawDeck = decks.get(id - 1);
-            Deck discardDeck = decks.get(id % playerCount);
+    public void playTurn(List<Deck> decks, int playerCount) throws InterruptedException {
+        Deck drawDeck = decks.get(id - 1);
+        Deck discardDeck = decks.get(id % playerCount);
 
-            synchronized(this){
-                Card drawnCard = drawDeck.drawCard();
-                if (drawnCard != null) {
-                    hand.add(drawnCard);
-                }
-                if (!hand.isEmpty()) {
-                    Card discardedCard = hand.remove(0); // doesnt have "strategy" yet
-                    discardDeck.addCard(discardedCard);
-                }
+        synchronized(this){
+            Card drawnCard = drawDeck.drawCard();
+            if (drawnCard != null) {
+                hand.add(drawnCard);
+                System.out.println("Player " + id + " drew a " + drawnCard.getValue() + " from deck " + drawDeck.getId());
+            } else {
+                return;
             }
-            
+            if (!hand.isEmpty()) {
+                Card discardedCard = hand.remove(0); // doesnt have "strategy" yet
+                discardDeck.addCard(discardedCard);
+                System.out.println("Player " + id + " discarded a " + discardedCard.getValue() + " to deck " + discardDeck.getId());
+            }
         }
+            
+    }
 
     @Override
     public String toString() {
