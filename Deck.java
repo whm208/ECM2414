@@ -3,18 +3,18 @@ import java.util.List;
 
 public class Deck {
     private int id;
-    private List<Integer> cards;
+    private List<Card> cards;
 
     public Deck(int id) {
         this.id = id;
         this.cards = new ArrayList<>();
     }
 
-    public void addCard(int card) {
+    public void addCard(Card card) {
         cards.add(card);
     }
 
-    public List<Integer> getCards() {
+    public List<Card> getCards() {
         return cards;
     }
 

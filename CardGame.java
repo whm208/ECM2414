@@ -21,7 +21,7 @@ public class CardGame {
                 System.out.println("There can be at most 8 players.");
             }
         } while (playerCount < 1 || playerCount > 8);
-        List<Integer> cardPack = null;
+        List<Card> cardPack = null;
         int requiredCards = playerCount * 8;
         while (true) {
             System.out.println("Please enter location of pack to load:");
@@ -57,20 +57,33 @@ public class CardGame {
             deck.addCard(cardPack.get(each_deck_card));
         }
         for (Player player : players) {
-            System.out.println(player);
+            String filename = "player" + player.getId() + "_output.txt";
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+                writer.write("player " + player.getId() + " initial hand:");
+                System.out.print("player " + player.getId() + " initial hand:");
+                for (Card card : player.getHand()) {
+                    writer.write(" " + card.getValue());
+                    System.out.print(" " + card.getValue());
+                }
+            writer.newLine();
+            }
+            catch (IOException e) {
+                System.out.println("Error writing to file " + filename + ": " + e.getMessage());
+            }
+            System.out.println();
         }
         for (Deck deck : decks) {
             System.out.println(deck);
         }
         scanner.close();
     }
-    private static List<Integer> loadPack(String filePath) {
+    private static List<Card> loadPack(String filePath) {
     File packFile = new File(filePath);
     if (!packFile.exists()) {
         System.out.println("Pack file not found.");
         return null;
     }
-    List<Integer> pack = new ArrayList<>();
+    List<Card> pack = new ArrayList<>();
     try (BufferedReader br = new BufferedReader(new FileReader(packFile))) {
         String line;
         int lineNumber = 1;
@@ -86,7 +99,7 @@ public class CardGame {
                     System.out.println("Error: Card value must be between 1 and 13 at line " + lineNumber + ": " + cardValue);
                     return null;
             }
-                pack.add(cardValue);
+                pack.add(new Card(cardValue));
             } catch (NumberFormatException e) {
                 System.out.println("Error: Invalid integer at line " + lineNumber + ": " + line);
                 return null;
