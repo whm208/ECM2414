@@ -5,18 +5,18 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Deck {
     private int id;
-    private BlockingQueue<Integer> cards;
+    private BlockingQueue<Card> cards;
 
     public Deck(int id) {
         this.id = id;
         this.cards = new LinkedBlockingQueue<>();
     }
 
-    public void addCard(int card) throws InterruptedException {
+    public void addCard(Card card) throws InterruptedException {
         cards.put(card);
     }
 
-    public List<Integer> getCards() {
+    public List<Card> getCards() {
         return new ArrayList<>(cards);
     }
 
