@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 public class Player {
     private int id;
@@ -32,6 +33,25 @@ public class Player {
     }
     return true;
     }
+
+
+    
+        public void playTurn(ArrayList<Deck> decks, int playerCount) throws InterruptedException {
+            Deck drawDeck = decks.get(id - 1);
+            Deck discardDeck = decks.get(id % playerCount);
+
+            synchronized(this){
+                Card drawnCard = drawDeck.drawCard();
+                if (drawnCard != null) {
+                    hand.add(drawnCard);
+                }
+                if (!hand.isEmpty()) {
+                    Card discardedCard = hand.remove(0); // doesnt have "strategy" yet
+                    discardDeck.addCard(discardedCard);
+                }
+            }
+            
+        }
 
     @Override
     public String toString() {

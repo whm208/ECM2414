@@ -16,6 +16,10 @@ public class Deck {
         cards.put(card);
     }
 
+    public Card drawCard() throws InterruptedException {
+        return cards.poll(); // if queue is empty, returns null immediately.
+    }
+
     public List<Card> getCards() {
         return new ArrayList<>(cards);
     }
