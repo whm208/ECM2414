@@ -59,9 +59,8 @@ public class CardGame {
         }
         for (Player each_player : players) {
             String filename = "player" + each_player.getId() + "_output.txt";
-            BufferedWriter writer = null;
             try {
-                writer = new BufferedWriter(new FileWriter(filename));
+                BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
                 writer.write("player " + each_player.getId() + " initial hand:");
                 System.out.print("player " + each_player.getId() + " initial hand: ");
                 for (Card each_card : each_player.getHand()) {
@@ -102,6 +101,20 @@ public class CardGame {
                 each_thread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+        }
+        for (Deck each_deck : decks) {
+            String filename = "deck" + each_deck.getId() + "_output.txt";
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+                List<Card> cards = each_deck.getCards();
+                for (Card each_card : cards) {
+                    writer.write(each_card.getValue() + " ");
+                }       
+                writer.newLine();
+                System.out.println("Final contents of deck " + each_deck.getId() + " written to " + filename);
+            }
+            catch (IOException e) {
+                System.out.println("Error writing deck file " + filename + ": " + e.getMessage());
             }
         }
         for (Player each_player : players) {

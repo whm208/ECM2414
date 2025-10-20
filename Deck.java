@@ -1,28 +1,54 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedList;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Deck {
     private int id;
-    private List<Card> cards;
+    private LinkedList<Card> cards;
+    private ReentrantLock lock = new ReentrantLock();
 
     public Deck(int id) {
         this.id = id;
-        this.cards = new ArrayList<>();
+        this.cards = new LinkedList<>();
     }
 
-    public synchronized void addCard(Card card) {
-        cards.add(card);
+    public void lock() {
+        lock.lock();
     }
 
-    public synchronized Card drawCard() {
-    if (!cards.isEmpty()) {
-        return cards.remove(0);
-    }
-    return null;
+    public void unlock() {
+        lock.unlock();
     }
 
-    public synchronized List<Card> getCards() {
-        return new ArrayList<>(cards);
+    public void addCard(Card card) {
+        lock.lock();
+        try {
+            cards.addLast(card);  // add to the back (bottom)
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public Card drawCard() {
+        lock.lock();
+        try {
+            if (!cards.isEmpty()) {
+                return cards.removeFirst();  // remove from the front (top)
+            }
+            return null;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public List<Card> getCards() {
+        lock.lock();
+        try {
+            return new ArrayList<>(cards);
+        } finally {
+            lock.unlock();
+        }
     }
 
     public int getId() {
@@ -30,7 +56,12 @@ public class Deck {
     }
 
     @Override
-    public synchronized String toString() {
-        return "Deck " + id + " cards: " + cards;
+    public String toString() {
+        lock.lock();
+        try {
+            return "Deck " + id + " cards: " + cards;
+        } finally {
+            lock.unlock();
+        }
     }
 }

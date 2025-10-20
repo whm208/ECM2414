@@ -22,14 +22,19 @@ public class Player implements Runnable {
     }
 
     public synchronized Card discardCard() {
-    if (!hand.isEmpty()) {
-        return hand.remove(0);
-    }
-    return null;
+    // Discard the first card which is NOT preferred
+        for (int i = 0; i < hand.size(); i++) {
+            if (hand.get(i).getValue() != id) { // id is player's preferred card value
+                return hand.remove(i);
+            }
+        }
+    // If all cards are preferred, don't discard (return null)
+        return null;
     }
 
+
     public List<Card> getHand() {
-        return hand;
+        return new ArrayList<>(hand);
     }
 
     public int getId() {
@@ -37,11 +42,11 @@ public class Player implements Runnable {
     }
 
     public synchronized boolean hasWinningHand() {
-    if (hand.isEmpty()) return false;
-    int value = hand.get(0).getValue();
-    for (Card each_card : hand) {
-        if (each_card.getValue() != value) {
-            return false;
+        if (hand.size() != 4) return false;  // Must have exactly 4 cards
+        int value = hand.get(0).getValue();
+        for (Card each_card : hand) {
+            if (each_card.getValue() != value) {
+                return false;
             }
         }
         return true;
@@ -85,37 +90,53 @@ public class Player implements Runnable {
 
     @Override
     public void run() {
+    // Check winning hand at start
+        if (hasWinningHand()) {
+            System.out.println("player " + id + " wins");
+            log("player " + id + " wins");
+            gameOver.set(true);
+            return;
+        }
         while (!gameOver.get()) {
             try {
-                Card drawnCard = leftDeck.drawCard();  // Assume Deck has synchronized drawCard method
-                if (drawnCard != null) {
-                    addCard(drawnCard);
-                    System.out.println("player " + id + " draws a " + drawnCard.getValue() + " from deck " + leftDeck.getId());
-                    log("player " + id + " draws a " + drawnCard.getValue() + " from deck " + leftDeck.getId());
+            // Lock both decks in fixed order (by ID) to avoid deadlock
+                Deck firstLock = (leftDeck.getId() < rightDeck.getId()) ? leftDeck : rightDeck;
+                Deck secondLock = (leftDeck.getId() < rightDeck.getId()) ? rightDeck : leftDeck;
+                firstLock.lock();
+                secondLock.lock();
+                try {
+                    if (gameOver.get()) break; // Check again after acquiring lock
+                    Card drawnCard = leftDeck.drawCard();
+                    if (drawnCard != null) {
+                        addCard(drawnCard);
+                        //System.out.println("player " + id + " draws a " + drawnCard.getValue() + " from deck " + leftDeck.getId());
+                        log("player " + id + " draws a " + drawnCard.getValue() + " from deck " + leftDeck.getId());
+                    }
+                    if (hasWinningHand()) {
+                        System.out.println("player " + id + " wins");
+                        log("player " + id + " wins");
+                        gameOver.set(true);
+                        break;
+                    }
+                    Card discarded = discardCard();
+                    if (discarded != null) {
+                        rightDeck.addCard(discarded);
+                        //System.out.println("player " + id + " discards a " + discarded.getValue() + " to deck " + rightDeck.getId());
+                        log("player " + id + " discards a " + discarded.getValue() + " to deck " + rightDeck.getId());
+                    }
+                    System.out.println(this);
                 }
-                // Check if player has winning hand
-                if (hasWinningHand()) {
-                    System.out.println("player " + id + " wins");
-                    log("player " + id + " wins");
-                    gameOver.set(true);
-                    break;
+                finally {
+                    secondLock.unlock();
+                    firstLock.unlock();
                 }
-                // Discard a card to rightDeck
-                Card discarded = discardCard();
-                if (discarded != null) {
-                    rightDeck.addCard(discarded); 
-                    System.out.println("player " + id + " discards a " + discarded.getValue() + " to deck " + rightDeck.getId());
-                    log("player " + id + " discards a " + discarded.getValue() + " to deck " + rightDeck.getId());
-                    // Assume Deck has synchronized addCard method
-                }
-                // Sleep or yield so other players can proceed
-                Thread.sleep(10);
-                }
-            catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+            Thread.sleep(1); // Yield control
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             break;
         }
     }
-    System.out.println("player " + id + " finished");
+    System.out.println("player " + id + " finished with " + getHand());
+    log("player " + id + " exits with hand " + getHand());
     }
 }
