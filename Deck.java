@@ -17,7 +17,7 @@ public class Deck {
     }
 
     public Card drawCard() throws InterruptedException {
-        return cards.poll(); // if queue is empty, returns null immediately.
+        return cards.take();
     }
 
     public List<Card> getCards() {
