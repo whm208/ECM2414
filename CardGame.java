@@ -63,7 +63,7 @@ public class CardGame {
                 System.out.print("player " + player.getId() + " initial hand: ");
                 for (Card card : player.getHand()) {
                     writer.write(card.getValue());
-                    System.out.print(card.getValue());
+                    System.out.print(card.getValue() + " ");
                 }
             writer.newLine();
             }
@@ -75,7 +75,7 @@ public class CardGame {
         for (Deck deck : decks) {
             System.out.print("deck" + deck.getId() + " initial cards: ");
             for (Card card : deck.getCards()) {
-                    System.out.print(card.getValue());
+                    System.out.print(card.getValue() + " ");
                 }
             System.out.println();
         }
