@@ -1,6 +1,7 @@
 import java.util.*;
 import java.util.concurrent.*;
 import java.io.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CardGame {
     public static void main(String[] args) {
@@ -79,6 +80,27 @@ public class CardGame {
                 }
             System.out.println();
         }
+        AtomicBoolean gameOver = new AtomicBoolean(false);
+        List<Thread> threads = new ArrayList<>();
+        for (int i = 0; i < playerCount; i++) {
+            Player player = players.get(i);
+            Deck leftDeck = decks.get(i);
+            Deck rightDeck = decks.get((i + 1) % playerCount);
+            player.setLeftDeck(leftDeck);
+            player.setRightDeck(rightDeck);
+            player.setGameOverFlag(gameOver);
+            Thread t = new Thread(player);
+            threads.add(t);
+            t.start();
+        }
+        for (Thread t : threads) {
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Game over!");
         scanner.close();
     }
     private static List<Card> loadPack(String filePath) {

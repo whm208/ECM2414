@@ -10,12 +10,19 @@ public class Deck {
         this.cards = new ArrayList<>();
     }
 
-    public void addCard(Card card) {
+    public synchronized void addCard(Card card) {
         cards.add(card);
     }
 
-    public List<Card> getCards() {
-        return cards;
+    public synchronized Card drawCard() {
+    if (!cards.isEmpty()) {
+        return cards.remove(0);
+    }
+    return null;
+    }
+
+    public synchronized List<Card> getCards() {
+        return new ArrayList<>(cards);
     }
 
     public int getId() {
@@ -23,7 +30,7 @@ public class Deck {
     }
 
     @Override
-    public String toString() {
+    public synchronized String toString() {
         return "Deck " + id + " cards: " + cards;
     }
 }
