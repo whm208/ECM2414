@@ -68,7 +68,6 @@ public class Player implements Runnable {
                 if (hand.get(discardIndex).getValue() != prefferedCard) {
                     Card discardedCard = hand.remove(discardIndex);
                     discardDeck.addCard(discardedCard);
-                    System.out.print(discardDeck.toString());
                     String filename = "player" + id + "_output.txt";
                     try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
                         writer.write("player " + id + " discards a " + discardedCard.getValue() + " to deck " + discardDeck.getId());

@@ -159,8 +159,8 @@ public class CardGame {
             }
             try {
                 int cardValue = Integer.parseInt(line);
-                if (cardValue < 1 || cardValue > 13) {
-                    System.out.println("Error: Card value must be between 1 and 13 at line " + lineNumber + ": " + cardValue);
+                if (cardValue < 1) {
+                    System.out.println("Error: Card value must be larger than 0 " + lineNumber + ": " + cardValue);
                     return null;
             }
                 pack.add(new Card(cardValue));
