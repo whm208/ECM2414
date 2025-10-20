@@ -57,30 +57,30 @@ public class CardGame {
             Deck deck = decks.get(each_deck_card % playerCount);
             deck.addCard(cardPack.get(each_deck_card));
         }
-        for (Player player : players) {
-            String filename = "player" + player.getId() + "_output.txt";
+        for (Player each_player : players) {
+            String filename = "player" + each_player.getId() + "_output.txt";
             BufferedWriter writer = null;
             try {
                 writer = new BufferedWriter(new FileWriter(filename));
-                writer.write("player " + player.getId() + " initial hand:");
-                System.out.print("player " + player.getId() + " initial hand: ");
-                for (Card card : player.getHand()) {
-                    writer.write(card.getValue() + " ");
-                    System.out.print(card.getValue() + " ");
+                writer.write("player " + each_player.getId() + " initial hand:");
+                System.out.print("player " + each_player.getId() + " initial hand: ");
+                for (Card each_card : each_player.getHand()) {
+                    writer.write(each_card.getValue() + " ");
+                    System.out.print(each_card.getValue() + " ");
                     }
                 writer.newLine();
                 writer.flush();
-                player.setLogWriter(writer);
+                each_player.setLogWriter(writer);
                 }
             catch (IOException e) {
                 System.out.println("Error writing to file " + filename + ": " + e.getMessage());
             }
             System.out.println();
         }
-        for (Deck deck : decks) {
-            System.out.print("deck" + deck.getId() + " initial cards: ");
-            for (Card card : deck.getCards()) {
-                    System.out.print(card.getValue() + " ");
+        for (Deck each_deck : decks) {
+            System.out.print("deck" + each_deck.getId() + " initial cards: ");
+            for (Card each_card : each_deck.getCards()) {
+                    System.out.print(each_card.getValue() + " ");
                 }
             System.out.println();
         }
@@ -93,25 +93,25 @@ public class CardGame {
             player.setLeftDeck(leftDeck);
             player.setRightDeck(rightDeck);
             player.setGameOverFlag(gameOver);
-            Thread t = new Thread(player);
-            threads.add(t);
-            t.start();
+            Thread new_thread = new Thread(player);
+            threads.add(new_thread);
+            new_thread.start();
         }
-        for (Thread t : threads) {
+        for (Thread each_thread : threads) {
             try {
-                t.join();
+                each_thread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        for (Player player : players) {
-            BufferedWriter writer = player.getLogWriter();
+        for (Player each_player : players) {
+            BufferedWriter writer = each_player.getLogWriter();
             if (writer != null) {
                 try {
                     writer.close();
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing log file for player " + player.getId());
+                    System.out.println("Error closing log file for player " + each_player.getId());
                 }
             }
         }
@@ -139,7 +139,7 @@ public class CardGame {
                 if (cardValue < 1 || cardValue > 13) {
                     System.out.println("Error: Card value must be between 1 and 13 at line " + lineNumber + ": " + cardValue);
                     return null;
-            }
+                }
                 pack.add(new Card(cardValue));
             } catch (NumberFormatException e) {
                 System.out.println("Error: Invalid integer at line " + lineNumber + ": " + line);

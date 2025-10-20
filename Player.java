@@ -39,8 +39,8 @@ public class Player implements Runnable {
     public synchronized boolean hasWinningHand() {
     if (hand.isEmpty()) return false;
     int value = hand.get(0).getValue();
-    for (Card card : hand) {
-        if (card.getValue() != value) {
+    for (Card each_card : hand) {
+        if (each_card.getValue() != value) {
             return false;
             }
         }
@@ -109,7 +109,7 @@ public class Player implements Runnable {
                     // Assume Deck has synchronized addCard method
                 }
                 // Sleep or yield so other players can proceed
-                Thread.sleep(100);
+                Thread.sleep(10);
                 }
             catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
