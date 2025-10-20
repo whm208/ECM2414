@@ -66,7 +66,9 @@ public class CardGame {
                     writer.write(card.getValue());
                     System.out.print(card.getValue() + " ");
                 }
-            writer.newLine();
+                writer.newLine();
+                writer.flush();
+                player.setLogWriter(writer);
             }
             catch (IOException e) {
                 System.out.println("Error writing to file " + filename + ": " + e.getMessage());
