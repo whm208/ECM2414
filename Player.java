@@ -85,7 +85,11 @@ public class Player implements Runnable {
 
     @Override
     public String toString() {
-        return "Player " + id + " current hand: " + hand;
+        StringBuilder sb = new StringBuilder();
+        for (Card card : hand) {
+            sb.append(card.getValue()).append(" ");
+        }
+        return sb.toString().trim();  // trim removes trailing space
     }
 
     @Override
@@ -124,19 +128,27 @@ public class Player implements Runnable {
                         //System.out.println("player " + id + " discards a " + discarded.getValue() + " to deck " + rightDeck.getId());
                         log("player " + id + " discards a " + discarded.getValue() + " to deck " + rightDeck.getId());
                     }
-                    System.out.println(this);
+                    if (gameOver.get()) break;
+                    System.out.println("player " + id + " current hand: " + this);
+                    if (hasWinningHand()) {
+                        System.out.println("player " + id + " wins");
+                        log("player " + id + " wins");
+                        gameOver.set(true);
+                        return;
+                    }
                 }
                 finally {
                     secondLock.unlock();
                     firstLock.unlock();
                 }
             Thread.sleep(1); // Yield control
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            break;
+            }   
+            catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+                }
         }
-    }
-    System.out.println("player " + id + " finished with " + getHand());
-    log("player " + id + " exits with hand " + getHand());
+    System.out.println("player " + id + " final hand: " + this);
+    log("player " + id + " exits with hand " + this);
     }
 }

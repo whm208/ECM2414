@@ -18,10 +18,12 @@ public class CardGame {
             if (playerCount < 1) { 
                 System.out.println("There must be at least 1 player.");
             }
-            else if (playerCount > 8) {
-                System.out.println("There can be at most 8 players.");
+            else if (playerCount > 16) {
+                System.out.println("There can be at most 16 players.");
             }
-        } while (playerCount < 1 || playerCount > 8);
+        } while (playerCount < 1 || playerCount > 16);
+        String generatedFile = "generated_pack.txt";
+        generateInputFile(playerCount, generatedFile);
         List<Card> cardPack = null;
         int requiredCards = playerCount * 8;
         while (true) {
@@ -96,6 +98,7 @@ public class CardGame {
             threads.add(new_thread);
             new_thread.start();
         }
+
         for (Thread each_thread : threads) {
             try {
                 each_thread.join();
@@ -130,6 +133,21 @@ public class CardGame {
         }
         System.out.println("Game over!");
         scanner.close();
+    }
+    private static void generateInputFile(int playerCount, String filename) {
+        int totalCards = playerCount * 8;
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+        // Write card values cycling from 1 to 13
+            for (int each_card = 0; each_card < totalCards; each_card++) {
+                int cardValue = ((each_card / 4) % 13) + 1;
+                writer.write(String.valueOf(cardValue));
+                writer.newLine();
+                }
+            System.out.println("Generated input file '" + filename + "' with " + totalCards + " cards.");
+        } 
+        catch (IOException e) {
+        System.out.println("Error generating input file: " + e.getMessage());
+        }
     }
     private static List<Card> loadPack(String filePath) {
     File packFile = new File(filePath);
