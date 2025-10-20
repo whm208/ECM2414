@@ -60,6 +60,11 @@ public class CardGame {
                 System.out.println("Error adding card to deck: " + e.getMessage());
             }
         }
+
+        for (Player player : players) {
+            player.setDecks(decks);
+        }
+
         for (Player player : players) {
             String filename = "player" + player.getId() + "_output.txt";
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
@@ -84,7 +89,58 @@ public class CardGame {
             System.out.println();
         }
         scanner.close();
+
+        List<Thread> playerThreads = new ArrayList<>();
+        for (Player player : players) {
+            playerThreads.add(new Thread(player));
+            playerThreads.get(player.getId() - 1).start();
+        }
+
+        while (true) {
+            boolean gameWon = false;
+            for (Player player : players) {
+                if (player.hasWinningHand()) {
+                    int winningId = player.getId();
+                    System.out.println("Player " + player.getId() + " wins!");
+                    for (Player p : players) {
+                        p.endGame();
+                    }
+                    gameWon = true;
+                    //
+                    String filename = "player" + winningId + "_output.txt";
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+                        writer.write("player " + winningId + " wins");
+                        writer.newLine();
+                        writer.write("player " + winningId + " exits");
+                        writer.newLine();
+                    } catch (IOException e) {
+                        System.out.println("Error writing to file " + filename + ": " + e.getMessage());
+                    }
+
+                    for (Player p : players) {
+                        if (p.getId() != winningId) {
+                            String otherFilename = "player" + p.getId() + "_output.txt";
+                            try (BufferedWriter writer = new BufferedWriter(new FileWriter(otherFilename, true))) {
+                                writer.write("player " + winningId + " has informed player " + p.getId() + " that player " + winningId + " has won");
+                                writer.newLine();
+                                writer.write("player " + p.getId() + " exits");
+                                writer.newLine();
+                            } catch (IOException e) {
+                                System.out.println("Error writing to file " + otherFilename + ": " + e.getMessage());
+                            }
+                        }
+                    }
+                    
+                    break;
+                }
+            }
+            if (gameWon) {
+                break;
+            }
+        }
     }
+
+        
     private static List<Card> loadPack(String filePath) {
     File packFile = new File(filePath);
     if (!packFile.exists()) {
@@ -120,4 +176,5 @@ public class CardGame {
         }
     return pack;
     }
+
 }
