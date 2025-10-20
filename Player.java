@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-
+import java.io.BufferedWriter;
+import java.io.IOException;
 
 public class Player implements Runnable {
     private int id;
@@ -73,6 +74,9 @@ public class Player implements Runnable {
         }
     }
 
+    public BufferedWriter getLogWriter() {
+        return logWriter;
+    }
 
     @Override
     public String toString() {

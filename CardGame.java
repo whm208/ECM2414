@@ -59,17 +59,19 @@ public class CardGame {
         }
         for (Player player : players) {
             String filename = "player" + player.getId() + "_output.txt";
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            BufferedWriter writer = null;
+            try {
+                writer = new BufferedWriter(new FileWriter(filename));
                 writer.write("player " + player.getId() + " initial hand:");
                 System.out.print("player " + player.getId() + " initial hand: ");
                 for (Card card : player.getHand()) {
-                    writer.write(card.getValue());
+                    writer.write(card.getValue() + " ");
                     System.out.print(card.getValue() + " ");
-                }
+                    }
                 writer.newLine();
                 writer.flush();
                 player.setLogWriter(writer);
-            }
+                }
             catch (IOException e) {
                 System.out.println("Error writing to file " + filename + ": " + e.getMessage());
             }
@@ -100,6 +102,17 @@ public class CardGame {
                 t.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+        }
+        for (Player player : players) {
+            BufferedWriter writer = player.getLogWriter();
+            if (writer != null) {
+                try {
+                    writer.close();
+                }
+                catch (IOException e) {
+                    System.out.println("Error closing log file for player " + player.getId());
+                }
             }
         }
         System.out.println("Game over!");
