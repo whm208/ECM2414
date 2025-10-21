@@ -22,7 +22,7 @@ public class CardGame {
                 System.out.println("There can be at most 16 players.");
             }
         } while (playerCount < 1 || playerCount > 16);
-        String generatedFile = "generated_pack.txt";
+        String generatedFile = "cards.txt";
         generateInputFile(playerCount, generatedFile);
         List<Card> cardPack = null;
         int requiredCards = playerCount * 8;
@@ -63,7 +63,7 @@ public class CardGame {
             String filename = "player" + each_player.getId() + "_output.txt";
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
-                writer.write("player " + each_player.getId() + " initial hand:");
+                writer.write("player " + each_player.getId() + " initial hand: ");
                 System.out.print("player " + each_player.getId() + " initial hand: ");
                 for (Card each_card : each_player.getHand()) {
                     writer.write(each_card.getValue() + " ");
@@ -79,7 +79,7 @@ public class CardGame {
             System.out.println();
         }
         for (Deck each_deck : decks) {
-            System.out.print("deck" + each_deck.getId() + " initial cards: ");
+            System.out.print("deck " + each_deck.getId() + " initial cards: ");
             for (Card each_card : each_deck.getCards()) {
                     System.out.print(each_card.getValue() + " ");
                 }
@@ -114,7 +114,7 @@ public class CardGame {
                     writer.write(each_card.getValue() + " ");
                 }       
                 writer.newLine();
-                System.out.println("Final contents of deck " + each_deck.getId() + " written to " + filename);
+                System.out.println("final contents of deck " + each_deck.getId() + " written to " + filename);
             }
             catch (IOException e) {
                 System.out.println("Error writing deck file " + filename + ": " + e.getMessage());
@@ -131,7 +131,7 @@ public class CardGame {
                 }
             }
         }
-        System.out.println("Game over!");
+        System.out.println("game over!");
         scanner.close();
     }
     private static void generateInputFile(int playerCount, String filename) {
