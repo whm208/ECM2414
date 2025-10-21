@@ -18,7 +18,10 @@ public class CardGame {
             if (playerCount < 1) { 
                 System.out.println("There must be at least 1 player.");
             }
-        } while (playerCount < 1);
+            else if (playerCount > 13) {
+                System.out.println("There can be at most 13 players.");
+            }
+        } while (playerCount < 1 || playerCount > 13);
         String generatedFile = "cards.txt";
         generateInputFile(playerCount, generatedFile);
         List<Card> cardPack = null;
