@@ -1,99 +1,71 @@
-
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Assertions;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-public class PlayerTest{
-    @Test
-    public synchronized void addCardTest(Card card) {
-        hand.add(card);
+public class PlayerTest {
+    private Player player;
+
+    @BeforeEach
+    public void setup() {
+        player = new Player(2); // preferred card is value 2
     }
 
     @Test
-    public synchronized void discardCardTest() {
-    // Discard the first card which is NOT preferred
-        for (int i = 0; i < hand.size(); i++) {
-            if (hand.get(i).getValue() != id) { // id is player's preferred card value
-                return hand.remove(i);
-            }
-        }
-    // If all cards are preferred, don't discard (return null)
-        return null;
+    public void testAddCard() {
+        player.addCard(new Card(4));
+        List<Card> hand = player.getHand();
+        Assertions.assertEquals(1, hand.size());
+        Assertions.assertEquals(4, hand.get(0).getValue());
     }
 
     @Test
-    public synchronized void getHandTest() {
-        return new ArrayList<>(hand);
+    public void testDiscardCardPrefersNonPreferred() {
+        player.addCard(new Card(2));  // preferred
+        player.addCard(new Card(5));  // non-preferred
+        Card discarded = player.discardCard();
+        Assertions.assertEquals(5, discarded.getValue(), "Should discard non-preferred card");
     }
 
     @Test
-    public void getIdTest() {
-        return id;
+    public void testDiscardCardAllPreferred() {
+        player.addCard(new Card(2));
+        player.addCard(new Card(2));
+        Card discarded = player.discardCard();
+        Assertions.assertNull(discarded, "Should return null when all cards are preferred");
     }
 
     @Test
-    public synchronized void hasWinningHandTest() {
-        if (hand.size() != 4) return false;  // Must have exactly 4 cards
-        int value = hand.get(0).getValue();
-        for (Card each_card : hand) {
-            if (each_card.getValue() != value) {
-                return false;
-            }
-        }
-        return true;
+    public void testHasWinningHandTrue() {
+        player.addCard(new Card(2));
+        player.addCard(new Card(2));
+        player.addCard(new Card(2));
+        player.addCard(new Card(2));
+        Assertions.assertTrue(player.hasWinningHand(), "Hand should be winning if all cards have same value");
     }
 
     @Test
-    public void setLeftDeckTest(Deck leftDeck) {
-        this.leftDeck = leftDeck;
+    public void testHasWinningHandFalseDueToDifferentValues() {
+        player.addCard(new Card(2));
+        player.addCard(new Card(3));
+        player.addCard(new Card(2));
+        player.addCard(new Card(2));
+        Assertions.assertFalse(player.hasWinningHand(), "Hand should not be winning if values differ");
     }
 
     @Test
-    public void setRightDeckTest(Deck rightDeck) {
-        this.rightDeck = rightDeck;
+    public void testHasWinningHandFalseDueToWrongCardCount() {
+        player.addCard(new Card(2));
+        player.addCard(new Card(2));
+        player.addCard(new Card(2));
+        // only 3 cards
+        Assertions.assertFalse(player.hasWinningHand(), "Hand should not be winning if not exactly 4 cards");
     }
 
     @Test
-    public void setGameOverFlagTest(AtomicBoolean gameOver) {
-        this.gameOver = gameOver;
-    }
-    
-    @Test
-    public void setLogWriterTest(BufferedWriter writer) {
-    this.logWriter = writer;
-    }
-
-    @Test
-    public synchronized void logTest(String message) {
-        try {
-            logWriter.write(message);
-            logWriter.newLine();
-            logWriter.flush();
-        }   
-        catch (IOException e) {
-            System.out.println("Error writing log for player " + id + ": " + e.getMessage());
-        }
-    }
-
-    @Test
-    public void getLogWriterTest() {
-        return logWriter;
-    }
-
-    @Test
-    public void toStringTest() {
-        StringBuilder sb = new StringBuilder();
-        for (Card card : hand) {
-            sb.append(card.getValue()).append(" ");
-        }
-        return sb.toString().trim();  // trim removes trailing space
-    }
-
-    @Test
-    public void runTest() {
+    public void testToStringFormat() {
+        player.addCard(new Card(4));
+        player.addCard(new Card(6));
+        Assertions.assertEquals("4 6", player.toString(), "toString should list card values separated by space");
     }
 }
