@@ -108,18 +108,17 @@ public class Player implements Runnable {
                 firstLock.lock();
                 secondLock.lock();
                 try {
-                    if (gameOver.get()) break; // Check again after acquiring lock
+                    if (gameOver.get()) break;
                     Card drawnCard = leftDeck.drawCard();
                     if (drawnCard != null) {
                         addCard(drawnCard);
-                        //System.out.println("player " + id + " draws a " + drawnCard.getValue() + " from deck " + leftDeck.getId());
                         System.out.println("player " + id + " draws a " + drawnCard.getValue() + " from deck " + leftDeck.getId());
                         log("player " + id + " draws a " + drawnCard.getValue() + " from deck " + leftDeck.getId());
                     }
+                    if (gameOver.get()) break;
                     Card discarded = discardCard();
                     if (discarded != null) {
                         rightDeck.addCard(discarded);
-                        //System.out.println("player " + id + " discards a " + discarded.getValue() + " to deck " + rightDeck.getId());
                         System.out.println("player " + id + " discards a " + discarded.getValue() + " to deck " + rightDeck.getId());
                         log("player " + id + " discards a " + discarded.getValue() + " to deck " + rightDeck.getId());
                     }
