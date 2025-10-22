@@ -1,21 +1,28 @@
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedList;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class DeckTest{
-    @Test
-    public void lockTest() {
+public class Deck {
+    private int id;
+    private LinkedList<Card> cards;
+    private ReentrantLock lock = new ReentrantLock();
+
+    public Deck(int id) {
+        this.id = id;
+        this.cards = new LinkedList<>();
+    }
+
+    public void lock() {
         lock.lock();
     }
 
-    @Test
-    public void unlockTest() {
+    public void unlock() {
         lock.unlock();
     }
 
-    @Test
-    public void addCardTest(Card card) {
+    public void addCard(Card card) {
         lock.lock();
         try {
             cards.addLast(card);  // add to the back (bottom)
@@ -24,8 +31,7 @@ public class DeckTest{
         }
     }
 
-    @Test
-    public void drawCardTest() {
+    public Card drawCard() {
         lock.lock();
         try {
             if (!cards.isEmpty()) {
@@ -37,8 +43,7 @@ public class DeckTest{
         }
     }
 
-    @Test
-    public void getCardsTest() {
+    public List<Card> getCards() {
         lock.lock();
         try {
             return new ArrayList<>(cards);
@@ -47,13 +52,12 @@ public class DeckTest{
         }
     }
 
-    @Test
-    public void getIdTest() {
+    public int getId() {
         return id;
     }
 
-    @Test
-    public void toStringTest() {
+    @Override
+    public String toString() {
         lock.lock();
         try {
             return "Deck " + id + " cards: " + cards;
