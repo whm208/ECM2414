@@ -98,7 +98,6 @@ public class CardGame {
             threads.add(new_thread);
             new_thread.start();
         }
-
         for (Thread each_thread : threads) {
             try {
                 each_thread.join();
@@ -121,6 +120,8 @@ public class CardGame {
             }
         }
         for (Player each_player : players) {
+            System.out.println("player " + each_player.getId() + " final hand: " + each_player.toString());
+            each_player.log("player " + each_player.getId() + " exits with hand " + each_player.toString());
             BufferedWriter writer = each_player.getLogWriter();
             if (writer != null) {
                 try {

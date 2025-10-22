@@ -33,7 +33,7 @@ public class Player implements Runnable {
     }
 
 
-    public List<Card> getHand() {
+    public synchronized List<Card> getHand() {
         return new ArrayList<>(hand);
     }
 
@@ -68,7 +68,7 @@ public class Player implements Runnable {
     this.logWriter = writer;
     }
 
-    private synchronized void log(String message) {
+    public synchronized void log(String message) {
         try {
             logWriter.write(message);
             logWriter.newLine();
@@ -95,10 +95,9 @@ public class Player implements Runnable {
     @Override
     public void run() {
     // Check winning hand at start
-        if (hasWinningHand()) {
+        if (hasWinningHand() && gameOver.compareAndSet(false, true)) {
             System.out.println("player " + id + " wins");
             log("player " + id + " wins");
-            gameOver.set(true);
             return;
         }
         while (!gameOver.get()) {
@@ -117,12 +116,6 @@ public class Player implements Runnable {
                         System.out.println("player " + id + " draws a " + drawnCard.getValue() + " from deck " + leftDeck.getId());
                         log("player " + id + " draws a " + drawnCard.getValue() + " from deck " + leftDeck.getId());
                     }
-                    if (hasWinningHand()) {
-                        System.out.println("player " + id + " wins");
-                        log("player " + id + " wins");
-                        gameOver.set(true);
-                        break;
-                    }
                     Card discarded = discardCard();
                     if (discarded != null) {
                         rightDeck.addCard(discarded);
@@ -132,10 +125,9 @@ public class Player implements Runnable {
                     }
                     if (gameOver.get()) break;
                     System.out.println("player " + id + " current hand: " + this);
-                    if (hasWinningHand()) {
+                    if (hasWinningHand() && gameOver.compareAndSet(false, true)) {
                         System.out.println("player " + id + " wins");
                         log("player " + id + " wins");
-                        gameOver.set(true);
                         return;
                     }
                 }
@@ -150,7 +142,5 @@ public class Player implements Runnable {
                 break;
                 }
         }
-    System.out.println("player " + id + " final hand: " + this);
-    log("player " + id + " exits with hand " + this);
     }
 }
