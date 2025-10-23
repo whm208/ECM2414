@@ -3,5 +3,5 @@
 # 1. Open cardsTest.zip, then
 # 2. Open
 # 3.
-# javac -d out cardgame/src/main/java/*.java
-# java -cp out CardGame
+# javac -d out src/main/java/cardgame/*.java
+# java -cp out cardgame.CardGame
