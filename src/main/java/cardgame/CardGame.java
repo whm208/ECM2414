@@ -87,10 +87,10 @@ public class CardGame {
         }
         AtomicBoolean gameOver = new AtomicBoolean(false);
         List<Thread> threads = new ArrayList<>();
-        for (int i = 0; i < playerCount; i++) {
-            Player player = players.get(i);
-            Deck leftDeck = decks.get(i);
-            Deck rightDeck = decks.get((i + 1) % playerCount);
+        for (int each_player = 0; each_player < playerCount; each_player++) {
+            Player player = players.get(each_player);
+            Deck leftDeck = decks.get(each_player);
+            Deck rightDeck = decks.get((each_player + 1) % playerCount);
             player.setLeftDeck(leftDeck);
             player.setRightDeck(rightDeck);
             player.setGameOverFlag(gameOver);
@@ -138,7 +138,6 @@ public class CardGame {
     public static void generateInputFile(int playerCount, String filename) {
         int totalCards = playerCount * 8;
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-        // Write card values cycling from 1 to 13
             for (int each_card = 0; each_card < totalCards; each_card++) {
                 int cardValue = ((each_card / 4) % 13) + 1;
                 writer.write(String.valueOf(cardValue));
@@ -157,10 +156,10 @@ public class CardGame {
         return null;
     }
     List<Card> pack = new ArrayList<>();
-    try (BufferedReader br = new BufferedReader(new FileReader(packFile))) {
+    try (BufferedReader bufferedreader = new BufferedReader(new FileReader(packFile))) {
         String line;
         int lineNumber = 1;
-        while ((line = br.readLine()) != null) {
+        while ((line = bufferedreader.readLine()) != null) {
             line = line.trim();
             if (line.isEmpty()) {
                 System.out.println("Error: Empty line at line " + lineNumber);
@@ -185,4 +184,5 @@ public class CardGame {
         }
     return pack;
     }
+
 }
