@@ -135,7 +135,7 @@ public class CardGame {
         System.out.println("game over!");
         scanner.close();
     }
-    private static void generateInputFile(int playerCount, String filename) {
+    public static void generateInputFile(int playerCount, String filename) {
         int totalCards = playerCount * 8;
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
         // Write card values cycling from 1 to 13
@@ -150,7 +150,7 @@ public class CardGame {
         System.out.println("Error generating input file: " + e.getMessage());
         }
     }
-    private static List<Card> loadPack(String filePath) {
+    public static List<Card> loadPack(String filePath) {
     File packFile = new File(filePath);
     if (!packFile.exists()) {
         System.out.println("Pack file not found.");
