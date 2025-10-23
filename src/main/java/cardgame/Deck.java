@@ -25,7 +25,7 @@ public class Deck {
     public void addCard(Card card) {
         lock.lock();
         try {
-            cards.addLast(card);  // add to the back (bottom)
+            cards.addLast(card);
         } finally {
             lock.unlock();
         }
@@ -35,7 +35,7 @@ public class Deck {
         lock.lock();
         try {
             if (!cards.isEmpty()) {
-                return cards.removeFirst();  // remove from the front (top)
+                return cards.removeFirst();
             }
             return null;
         } finally {
