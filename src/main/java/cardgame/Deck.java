@@ -9,11 +9,13 @@ public class Deck {
     private LinkedList<Card> cards;
     private ReentrantLock lock = new ReentrantLock();
 
+    // Constructor
     public Deck(int id) {
         this.id = id;
         this.cards = new LinkedList<>();
     }
 
+    // Methods to lock and unlock the deck
     public void lock() {
         lock.lock();
     }
@@ -22,6 +24,7 @@ public class Deck {
         lock.unlock();
     }
 
+    // Method to add card to the deck
     public void addCard(Card card) {
         lock.lock();
         try {
@@ -31,6 +34,7 @@ public class Deck {
         }
     }
 
+    // Method to draw a card from the deck, from the "top" (front of the list)
     public Card drawCard() {
         lock.lock();
         try {
@@ -43,6 +47,7 @@ public class Deck {
         }
     }
 
+    // Method to get a copy of the cards in the deck
     public List<Card> getCards() {
         lock.lock();
         try {
@@ -52,6 +57,7 @@ public class Deck {
         }
     }
 
+    // Method to get the deck's id
     public int getId() {
         return id;
     }
