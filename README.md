@@ -1,6 +1,5 @@
-# ECM2414 Software Development Pair Programming README
-# To run the test suite, firstly:
-# 1. Open cardsTest.zip, then
+# How to run the test suite:
+# 1. Open cardsTest.zip
 # 2. Open
 # 3.
 # javac -d out src/main/java/cardgame/*.java
