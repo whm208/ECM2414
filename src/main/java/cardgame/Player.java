@@ -23,16 +23,13 @@ public class Player implements Runnable {
     }
 
     public synchronized Card discardCard() {
-    // Discard the first card which is NOT preferred
         for (int i = 0; i < hand.size(); i++) {
-            if (hand.get(i).getValue() != id) { // id is player's preferred card value
+            if (hand.get(i).getValue() != id) {
                 return hand.remove(i);
             }
         }
-    // If all cards are preferred, don't discard (return null)
         return null;
     }
-
 
     public synchronized List<Card> getHand() {
         return new ArrayList<>(hand);
@@ -43,7 +40,7 @@ public class Player implements Runnable {
     }
 
     public synchronized boolean hasWinningHand() {
-        if (hand.size() != 4) return false;  // Must have exactly 4 cards
+        if (hand.size() != 4) return false;
         int value = hand.get(0).getValue();
         for (Card each_card : hand) {
             if (each_card.getValue() != value) {
@@ -90,12 +87,11 @@ public class Player implements Runnable {
         for (Card card : hand) {
             sb.append(card.getValue()).append(" ");
         }
-        return sb.toString().trim();  // trim removes trailing space
+        return sb.toString().trim();
     }
 
     @Override
     public void run() {
-    // Check winning hand at start
         if (hasWinningHand() && gameOver.compareAndSet(false, true)) {
             System.out.println("player " + id + " wins");
             log("player " + id + " wins");
@@ -103,7 +99,6 @@ public class Player implements Runnable {
         }
         while (!gameOver.get()) {
             try {
-            // Lock both decks in fixed order (by ID) to avoid deadlock
                 Deck firstLock = (leftDeck.getId() < rightDeck.getId()) ? leftDeck : rightDeck;
                 Deck secondLock = (leftDeck.getId() < rightDeck.getId()) ? rightDeck : leftDeck;
                 firstLock.lock();
@@ -135,7 +130,7 @@ public class Player implements Runnable {
                     secondLock.unlock();
                     firstLock.unlock();
                 }
-            Thread.sleep(1); // Yield control
+            Thread.sleep(1);
             }   
             catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
