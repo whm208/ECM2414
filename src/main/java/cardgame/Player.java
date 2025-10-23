@@ -23,9 +23,9 @@ public class Player implements Runnable {
     }
 
     public synchronized Card discardCard() {
-        for (int i = 0; i < hand.size(); i++) {
-            if (hand.get(i).getValue() != id) {
-                return hand.remove(i);
+        for (int each_card = 0; each_card < hand.size(); i++) {
+            if (hand.get(each_card).getValue() != id) {
+                return hand.remove(each_card);
             }
         }
         return null;
@@ -83,11 +83,11 @@ public class Player implements Runnable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (Card card : hand) {
-            sb.append(card.getValue()).append(" ");
+        StringBuilder stringbuilder = new StringBuilder();
+        for (Card each_card : hand) {
+            stringbuilder.append(each_card.getValue()).append(" ");
         }
-        return sb.toString().trim();
+        return stringbuilder.toString().trim();
     }
 
     @Override
