@@ -3,12 +3,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
 public class CardTest{
+    // ---------- Card Tests ----------
+    
+    // Test getValue method
     @Test
     public void getValueTest() {
         Card card = new Card(5);
         Assertions.assertEquals(5, card.getValue(), "Card value should be 5");
     }
 
+    // Test toString method
     @Test
     public void toStringTest() {
         Card card = new Card(10);
