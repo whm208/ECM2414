@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import java.util.List;
 
 public class DeckTest {
-    // ---------- Deck Tests ----------
     private Deck deck;
 
     // Create a new Deck before each test
@@ -16,7 +15,7 @@ public class DeckTest {
 
     // Test adding a card and drawing it
     @Test
-    public void testAddAndDrawCard() {
+    public void addAndDrawCardTest() {
         Card card = new Card(7);
         deck.addCard(card);
         Card drawn = deck.drawCard();
@@ -25,14 +24,14 @@ public class DeckTest {
 
     // Test drawing from an empty deck, should return null
     @Test
-    public void testDrawFromEmptyDeck() {
+    public void drawFromEmptyDeckTest() {
         Card drawn = deck.drawCard();
         Assertions.assertNull(drawn, "Drawing from empty deck should return null");
     }
 
     // Test that getCards returns a copy of the internal list
     @Test
-    public void testGetCardsReturnsCopy() {
+    public void getCardsReturnsCopyTest() {
         deck.addCard(new Card(5));
         List<Card> cards1 = deck.getCards();
         List<Card> cards2 = deck.getCards();
@@ -42,13 +41,13 @@ public class DeckTest {
 
     // Test deck ID is set correctly
     @Test
-    public void testDeckId() {
+    public void deckIdTest() {
         Assertions.assertEquals(1, deck.getId(), "Deck ID should be set correctly");
     }
 
     // Test toString method formats correctly
     @Test
-    public void testToStringFormat() {
+    public void toStringFormatTest() {
         deck.addCard(new Card(3));
         deck.addCard(new Card(8));
         String expected = "Deck 1 cards: [3, 8]";
