@@ -2,16 +2,15 @@ package cardgame;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
 import java.io.*;
 import java.nio.file.Path;
 import java.util.List;
 
 public class CardGameTest {
-    // ---------- loadPack Tests ----------
-
+    // loadPack Tests:
+    // Test loading a valid pack file, where pack contains 8 cards, all with value 5
     @Test
-    public void testLoadPackValidFile(@TempDir Path tempDir) throws IOException {
+    public void validFileTest(@TempDir Path tempDir) throws IOException {
         File file = tempDir.resolve("validPack.txt").toFile();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             for (int i = 0; i < 8; i++) {
@@ -26,8 +25,9 @@ public class CardGameTest {
         assertTrue(cards.stream().allMatch(c -> c.getValue() == 5), "All card values should be 5");
     }
 
+    // Test loading a pack file thats invalid.
     @Test
-    public void testLoadPackInvalidCardValue(@TempDir Path tempDir) throws IOException {
+    public void invalidCardValueTest(@TempDir Path tempDir) throws IOException {
         File file = tempDir.resolve("invalidValue.txt").toFile();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write("5\n");
@@ -39,8 +39,9 @@ public class CardGameTest {
         assertNull(cards, "Pack with invalid card value should return null");
     }
 
+    // Test loading a pack file with an empty line.
     @Test
-    public void testLoadPackEmptyLine(@TempDir Path tempDir) throws IOException {
+    public void emptyLineTest(@TempDir Path tempDir) throws IOException {
         File file = tempDir.resolve("emptyLine.txt").toFile();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write("1\n\n3\n");  // empty line
@@ -50,16 +51,17 @@ public class CardGameTest {
         assertNull(cards, "Pack with empty line should return null");
     }
 
+    // Test loading a non-existent pack file.
     @Test
-    public void testLoadPackNonExistentFile() {
+    public void nonExistentFileTest() {
         List<Card> cards = CardGame.loadPack("non_existent_file.txt");
         assertNull(cards, "Non-existent file should return null");
     }
 
-    // ---------- generateInputFile Tests ----------
-
+    // generateInputFile Tests:
+    // Test generating an input file for 4 players and verify it creates the correct number of cards
     @Test
-    public void testGenerateInputFileCreatesCorrectNumberOfCards(@TempDir Path tempDir) throws IOException {
+    public void createsCorrectNumberOfCardsTest(@TempDir Path tempDir) throws IOException {
         String filename = tempDir.resolve("generated.txt").toString();
         int playerCount = 4;
         CardGame.generateInputFile(playerCount, filename);
@@ -68,8 +70,9 @@ public class CardGameTest {
         assertEquals(playerCount * 8, lines.size(), "File should contain exactly playerCount × 8 lines");
     }
 
+    // Test generating an input file and verify all card values are within the valid range (1-13)
     @Test
-    public void testGeneratedFileCardValuesInRange(@TempDir Path tempDir) throws IOException {
+    public void cardValuesInRangeTest(@TempDir Path tempDir) throws IOException {
         String filename = tempDir.resolve("generated.txt").toString();
         CardGame.generateInputFile(4, filename);
 
